@@ -72,7 +72,8 @@ Each variable is listed using \[1\] - \[4\] to represent the numbered dataset ab
 
 ## 4. Data Example
 
-This is a screenshot of the dataset from Our World Bank.
+This is a screenshot of the *World Development Indicators* dataset from Our World Bank.
+
 ![owb_wdi](img/ourworldbank_dataset.png)
 
 ## 5. EDA
