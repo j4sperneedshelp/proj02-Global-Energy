@@ -1,0 +1,77 @@
+---
+title: "Data Management"
+author: "Tristen Hale, Jasper Eerkens"
+date: today
+format: pdf
+execute:
+  warning: false
+  message: false
+  error: false
+---
+
+# Setup
+``` {r}
+library(tidyverse)
+library(readxl)
+```
+
+# Datasets / Datasets Manipulation
+```{r}
+# load datasets
+IEA_WEB   <- read_xlsx(here::here("data/IEA_WEB.xlsx"), sheet = "TimeSeries_1971-2024") 
+OWB_WDI   <- read_csv(here::here("data/OWB_WDI.csv"))
+OECD_STAN <- read_csv(here::here("data/OECD_STAN.csv"))
+
+# load data from figures
+STANFORD_4_2_1  <- read_csv(here::here("data/fig_4.2.1.csv"))
+STANFORD_4_2_4  <- read_csv(here::here("data/fig_4.2.4.csv"))
+STANFORD_4_2_11 <- read_csv(here::here("data/fig_4.2.11.csv"))
+STANFORD_4_2_12 <- read_csv(here::here("data/fig_4.2.12.csv"))
+STANFORD_4_3_12 <- read_csv(here::here("data/fig_4.3.12.csv"))
+
+# combine figure data
+STANFORD_INVEST <- STANFORD_4_2_1 %>%
+  left_join(STANFORD_4_2_4,  by = "Year") %>%
+  left_join(STANFORD_4_2_11, by = "Year")
+  
+STANFORD_DIFFUSION <- STANFORD_4_2_12 %>%
+  left_join(STANFORD_4_3_12, by = join_by(Country == Economy)) %>%
+  mutate(Label = case_when(
+    Country == "United States" ~ "United States",
+    Country == "China" ~ "China",
+    TRUE ~ "Europe"
+  ))
+
+STANFORD <- STANFORD_INVEST %>% 
+  left_join(STANFORD_DIFFUSION, by = "Label")
+```
+# Data
+## 1. IEA
+```{r}
+# show data columns (not watermark)
+IEA_WEB %>%
+  select(-`Source: IEA (2025). All rights reserved. (https://www.iea.org/terms)`) %>%
+  glimpse()
+```
+
+## 2. Our World Bank
+```{r}
+glimpse(OWB_WDI)
+```
+
+## 3. OECD
+```{r}
+glimpse(OECD_STAN)
+```
+
+## 4. Stanford AI Index
+```{r}
+glimpse(STANFORD_INVEST)
+glimpse(STANFORD_DIFFUSION)
+glimpse(STANFORD)
+```
+
+
+
+
+
